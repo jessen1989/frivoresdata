@@ -1,16 +1,16 @@
 labels:
   - name: "fest"
-    color: F5B027
+    color: "F5B027"
     description: God Nyhed
   - name: "torskegilde"
-    color: 3A3748
+    color: "3A3748"
     description: "Dårlig Nyhed"
-  - name: LibreLabOK
-    color: 71992c
+  - name: "LibreLabOK"
+    color: "71992c"
     description: "Et rigtig godt Librelab projekt"
-  - name: LibreLabNotOK
-    color: 778c2a
-    description: Et knap så godt Librelab projekt
+  - name: "LibreLabNotOK"
+    color: "778c2a"
+    description: "Et knap så godt Librelab projekt"
   - name: "bug"
     description: "Something is not working"
     color: "d73a4a"
@@ -24,5 +24,8 @@ labels:
     description: "This will not be worked on"
     color: "fffffe"
   - name: "testlabel"
-    color: F5C027
+    color: "F5C027"
     description: "Test Label"
+  - name: "funky"
+    color: "aa9e3b"
+    description: "Funky Town"
