@@ -60,8 +60,7 @@ jobs:
 
           # GET all existing labels from the GitHub API (follow pagination)
           page=1
-          existing_labels="["
-          first_page=true
+          existing_labels="[]"
           while :; do
             response="$(curl -sfS -H "${auth_header}" -H "${accept_header}" \
               -H "${api_version_header}" \
@@ -70,12 +69,10 @@ jobs:
             if [ "${count}" -eq 0 ]; then
               break
             fi
-            if [ "${first_page}" = true ]; then
-              existing_labels="${existing_labels}$(echo "${response}" | jq -c '.[]')"
-              first_page=false
-            else
-              existing_labels="${existing_labels},$(echo "${response}" | jq -c '.[]')"
-            fi
+            existing_labels="$(jq -n \
+              --argjson acc "${existing_labels}" \
+              --argjson page "${response}" \
+              '$acc + $page')"
             page="$((page + 1))"
           done
           existing_labels="${existing_labels}]"
