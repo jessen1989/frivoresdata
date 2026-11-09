@@ -28,7 +28,10 @@ jobs:
     steps:
       - name: Install JQ
         run: |
-          apt update && apt install jq -y
+          apt update && apt install curl -y
+      - name: Install JQ
+        run: |
+          apt install jq -y
           jq --version
       - name: Install yq
         run: |
