@@ -11,7 +11,7 @@ on:
 
 jobs:
   test-labels:
-    runs-on: selvf-hosted
+    runs-on: self-hosted
     steps:
       - name: Install JQ
         run: |
