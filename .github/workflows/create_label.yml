@@ -38,9 +38,9 @@ jobs:
       - name: Install yq
         run: |
           set -euo pipefail
-          curl -sfSL -o /usr/local/bin/yq \
-          https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
-          chmod +x /usr/local/bin/yq
+          curl -sfSL -o "$RUNNER_TEMP/yq" \
+            https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          sudo install -m 0755 "$RUNNER_TEMP/yq" /usr/local/bin/yq
           yq --version
 
       - name: Create or update labels
