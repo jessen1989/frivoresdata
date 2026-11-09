@@ -28,15 +28,18 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
-      - name: Install JQ
+
+      - name: Install jq
         run: |
-          apt install jq -y
+          apt update && apt install -y jq
           jq --version
+
       - name: Install yq
         uses: mikefarah/yq@v4.54.3
 
       - name: Verify yq
         run: yq --version
+
       - name: Create or update labels
         run: |
           set -euo pipefail
@@ -49,9 +52,8 @@ jobs:
           echo "Found ${label_count} labels in ${LABELS_FILE}"
 
           # GET all existing labels from the Forgejo API (JSON output)
-          existing_labels="$(curl -sfS -H "Authorization: \
-          token ${FORGEJO_TOKEN}" \
-          -H "Accept: application/json" "${API_URL}/repos/${REPO}/labels")"
+          existing_labels="$(curl -sfS -H "Authorization: token ${FORGEJO_TOKEN}" \
+            -H "Accept: application/json" "${API_URL}/repos/${REPO}/labels")"
 
           echo "Labels currently on Forgejo:"
           echo "${existing_labels}" | jq 'map(.name)'
@@ -62,74 +64,57 @@ jobs:
             i="$((i + 1))"
 
             LABEL_NAME="$(jq -r '.name' <<< "${label_json}")"
-            LABEL_DESCRIPTION="$(jq -r '.description // ""' \
-            <<< "${label_json}")"
-            color="$(jq -r '.color' <<< "${label_json}" | tr \
-            -d '#' | tr '[:upper:]' '[:lower:]')"
+            LABEL_DESCRIPTION="$(jq -r '.description // ""' <<< "${label_json}")"
+            color="$(jq -r '.color' <<< "${label_json}" | tr -d '#' | tr '[:upper:]' '[:lower:]')"
 
-            existing="$(echo "${existing_labels}" | \
-            jq --arg name "${LABEL_NAME}" \
-            'map(select(.name == $name))[0]')"
+            existing="$(echo "${existing_labels}" | jq --arg name "${LABEL_NAME}" \
+              'map(select(.name == $name))[0]')"
 
             if [ "${existing}" = "null" ]; then
               echo "Label '${LABEL_NAME}' does not exist - creating it."
               body="$(jq -n --arg name "${LABEL_NAME}" \
-              --arg description "${LABEL_DESCRIPTION}" \
-              --arg color "${color}" '{name: $name, description: \
-              $description,\
-              color: $color}')"
-              curl -sfS -X POST -H "Authorization: token \
-              ${FORGEJO_TOKEN}" \
-              -H "Content-Type: application/json" \
-              -d "${body}" "${API_URL}/repos/${REPO}/labels" | \
-              jq '{name, description, color}'
+                --arg description "${LABEL_DESCRIPTION}" \
+                --arg color "${color}" \
+                '{name: $name, description: $description, color: $color}')"
+              curl -sfS -X POST -H "Authorization: token ${FORGEJO_TOKEN}" \
+                -H "Content-Type: application/json" \
+                -d "${body}" "${API_URL}/repos/${REPO}/labels" | jq '{name, description, color}'
               continue
             fi
 
-            existing_color="$(echo "${existing}" | jq -r '.color' \
-            | tr -d '#' | tr '[:upper:]' '[:lower:]')"
-            existing_description="$(echo "${existing}" | jq -r \
-            '.description // ""')"
+            existing_color="$(echo "${existing}" | jq -r '.color' | tr -d '#' | tr '[:upper:]' '[:lower:]')"
+            existing_description="$(echo "${existing}" | jq -r '.description // ""')"
             label_id="$(echo "${existing}" | jq -r '.id')"
 
-            if [ "${existing_color}" = "${color}" ] && \
-            [ "${existing_description}" = "${LABEL_DESCRIPTION}" ]; then
-              echo "Label '${LABEL_NAME}' already exists \
-              with the same color and description \
-              - no change needed."
+            if [ "${existing_color}" = "${color}" ] && [ "${existing_description}" = "${LABEL_DESCRIPTION}" ]; then
+              echo "Label '${LABEL_NAME}' already exists with the same color and description - no change needed."
               continue
             fi
 
             echo "Label '${LABEL_NAME}' exists but differs - updating it."
             echo "  color: ${existing_color} -> ${color}"
-            echo "  description: ${existing_description} -> \
-            ${LABEL_DESCRIPTION}"
+            echo "  description: ${existing_description} -> ${LABEL_DESCRIPTION}"
             body="$(jq -n --arg name "${LABEL_NAME}" \
-            --arg description "${LABEL_DESCRIPTION}" \
-            --arg color "${color}" '{name: $name, description: \
-            $description, color: $color}')"
-            curl -sfS -X PATCH -H "Authorization: token ${FORGEJO_TOKEN}" -H \
-            "Content-Type: application/json" \
-            -d "${body}" "${API_URL}/repos/${REPO}/labels/${label_id}" \
-            | jq '{name, description, color}'
+              --arg description "${LABEL_DESCRIPTION}" \
+              --arg color "${color}" \
+              '{name: $name, description: $description, color: $color}')"
+            curl -sfS -X PATCH -H "Authorization: token ${FORGEJO_TOKEN}" \
+              -H "Content-Type: application/json" \
+              -d "${body}" "${API_URL}/repos/${REPO}/labels/${label_id}" | jq '{name, description, color}'
           done
 
           # Prune: delete labels on Forgejo that are not in the file
-          undeclared_ids="$(echo "${existing_labels}" | jq --slurpfile desired \
-          /tmp/labels.json '[.[] \
-          | select(.name as $n | ($desired[0] | map(.name) | index($n)) | not) \
-          | .id]')"
+          undeclared_ids="$(echo "${existing_labels}" | jq --slurpfile desired /tmp/labels.json \
+            '[.[] | select(.name as $n | ($desired[0] | map(.name) | index($n)) | not) | .id]')"
           undeclared_count="$(echo "${undeclared_ids}" | jq length)"
 
           if [ "${undeclared_count}" -gt 0 ]; then
             echo "Labels on Forgejo that are not in ${LABELS_FILE} - deleting:"
-            echo "${existing_labels}" | \
-            jq -r --slurpfile desired /tmp/labels.json \
-            '.[] | select(.name as $n \
-            | ($desired[0] | map(.name) | index($n)) | not) | "  - " + .name'
+            echo "${existing_labels}" | jq -r --slurpfile desired /tmp/labels.json \
+              '.[] | select(.name as $n | ($desired[0] | map(.name) | index($n)) | not) | "  - " + .name'
             for id in $(echo "${undeclared_ids}" | jq -r '.[]'); do
               curl -sfS -X DELETE -H "Authorization: token ${FORGEJO_TOKEN}" \
-              "${API_URL}/repos/${REPO}/labels/${id}"
+                "${API_URL}/repos/${REPO}/labels/${id}"
             done
           else
             echo "No undeclared labels - nothing to prune."
