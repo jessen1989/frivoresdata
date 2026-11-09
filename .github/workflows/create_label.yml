@@ -24,7 +24,7 @@ jobs:
       FORGEJO_TOKEN: ${{ secrets.ISSUE_SECRET }}
       SERVER_URL: ${{ github.server_url }}
       REPO: ${{ github.repository }}
-      LABELS_FILE: .forgejo/labels.yml
+      LABELS_FILE: .github/labels.yml
     steps:
       - name: Install JQ
         run: |
