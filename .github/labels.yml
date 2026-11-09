@@ -22,4 +22,4 @@ labels:
     color: "FF00FF"
   - name: "wontfix"
     description: "This will not be worked on"
-    color: "ffffff"
+    color: "fffffe"
