@@ -1,0 +1,25 @@
+labels:
+  - name: "fest"
+    color: F5B027
+    description: God Nyhed
+  - name: "torskegilde"
+    color: 3A3748
+    description: "Dårlig Nyhed"
+  - name: LibreLabOK
+    color: 71992c
+    description: "Et rigtig godt Librelab projekt"
+  - name: LibreLabNotOK
+    color: 778c2a
+    description: Et knap så godt Librelab projekt
+  - name: "bug"
+    description: "Something is not working"
+    color: "d73a4a"
+  - name: "enhancement"
+    description: "New feature or request"
+    color: "a2eeef"
+  - name: "documentation"
+    description: "Improvements or additions to documentation"
+    color: "FF00FF"
+  - name: "wontfix"
+    description: "This will not be worked on"
+    color: "ffffff"
