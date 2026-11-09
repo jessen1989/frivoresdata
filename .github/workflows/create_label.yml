@@ -28,7 +28,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
-      - name: Install JQ
+      - name: Install curl
         run: |
           apt update && apt install curl -y
       - name: Install JQ
@@ -36,13 +36,10 @@ jobs:
           apt install jq -y
           jq --version
       - name: Install yq
-        run: |
-          set -euo pipefail
-          curl -sfSL -o "$RUNNER_TEMP/yq" \
-            https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
-          sudo install -m 0755 "$RUNNER_TEMP/yq" /usr/local/bin/yq
-          yq --version
+        uses: mikefarah/yq@v4.54.3
 
+      - name: Verify yq
+        run: yq --version
       - name: Create or update labels
         run: |
           set -euo pipefail
