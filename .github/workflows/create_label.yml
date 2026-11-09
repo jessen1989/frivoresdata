@@ -128,20 +128,41 @@ jobs:
           done
 
           # Prune: delete labels on GitHub that are not in the file
-          undeclared_names="$(echo "${existing_labels}" | jq --slurpfile desired /tmp/labels.json \
-            '[.[] | select(.name as $n | ($desired[0] | map(.name) | index($n)) | not) | .name]')"
-          undeclared_count="$(echo "${undeclared_names}" | jq length)"
-
-          if [ "${undeclared_count}" -gt 0 ]; then
-            echo "Labels on GitHub that are not in ${LABELS_FILE} - deleting:"
-            echo "${undeclared_names}" | jq -r '.[] | "  - " + .'
-            for name in $(echo "${undeclared_names}" | jq -r '.[]'); do
-              curl -sfS -X DELETE -H "${auth_header}" -H "${accept_header}" \
-                -H "${api_version_header}" \
-                "${API_URL}/repos/${REPO}/labels/$(jq -rn --arg v "${name}" '$v|@uri')"
-            done
+          PRUNE_ENABLED="${PRUNE_ENABLED:-true}"
+          if [ "${PRUNE_ENABLED}" != "true" ]; then
+            echo "Pruning disabled - skipping deletion of undeclared labels."
           else
-            echo "No undeclared labels - nothing to prune."
+            # Re-fetch the current label list: labels created earlier in
+            # this run must not be counted, and any concurrent change is picked up
+            prune_list="$(curl -sfS -H "${auth_header}" -H "${accept_header}" \
+              -H "${api_version_header}" \
+              "${API_URL}/repos/${REPO}/labels?per_page=100")"
+
+            undeclared_names="$(echo "${prune_list}" | jq --slurpfile desired /tmp/labels.json \
+              '[.[] | select(.name as $n | ($desired[0] | map(.name) | index($n)) | not) | .name]')"
+            undeclared_count="$(echo "${undeclared_names}" | jq length)"
+
+            if [ "${undeclared_count}" -gt 0 ]; then
+              echo "Labels on GitHub that are not in ${LABELS_FILE} - deleting:"
+              echo "${undeclared_names}" | jq -r '.[] | "  - " + .'
+
+              while IFS= read -r name; do
+                [ -z "${name}" ] && continue
+                encoded="$(jq -rn --arg v "${name}" '$v|@uri')"
+                status="$(curl -sS -o /dev/null -w '%{http_code}' -X DELETE \
+                  -H "${auth_header}" -H "${accept_header}" \
+                  -H "${api_version_header}" \
+                  "${API_URL}/repos/${REPO}/labels/${encoded}" || true)"
+                if [ "${status}" = "204" ]; then
+                  echo "  deleted: ${name}"
+                else
+                  echo "  WARNING: could not delete '${name}' (HTTP ${status})"
+                fi
+                sleep 1
+              done < <(echo "${undeclared_names}" | jq -r '.[]')
+            else
+              echo "No undeclared labels - nothing to prune."
+            fi
           fi
 
           echo "All labels reconciled."
