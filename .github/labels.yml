@@ -23,3 +23,6 @@ labels:
   - name: "wontfix"
     description: "This will not be worked on"
     color: "fffffe"
+  - name: "testlabel"
+    color: F5C027
+    description: "Test Label"
