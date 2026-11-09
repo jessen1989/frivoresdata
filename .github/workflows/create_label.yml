@@ -28,9 +28,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
-      - name: Install curl
-        run: |
-          apt update && apt install curl -y
       - name: Install JQ
         run: |
           apt install jq -y
