@@ -75,8 +75,6 @@ jobs:
               '$acc + $page')"
             page="$((page + 1))"
           done
-          existing_labels="${existing_labels}]"
-          existing_labels="$(echo "${existing_labels}" | jq '.')" 
 
           echo "Labels currently on GitHub:"
           echo "${existing_labels}" | jq 'map(.name)'
@@ -118,11 +116,6 @@ jobs:
             echo "Label '${LABEL_NAME}' exists but differs - updating it."
             echo "  color: ${existing_color} -> ${color}"
             echo "  description: ${existing_description} -> ${LABEL_DESCRIPTION}"
-            body="$(jq -n --arg description "${LABEL_DESCRIPTION}" \
-              --arg color "${color}" \
-              '{description: $description, color: $color, force_new_name: null}')"
-            body="$(echo "${body}" | jq 'del(.force_new_name)')"
-            # PATCH by name: update color and description
             body="$(jq -n --arg description "${LABEL_DESCRIPTION}" \
               --arg color "${color}" \
               '{description: $description, color: $color}')"
