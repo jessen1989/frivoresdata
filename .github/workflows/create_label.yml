@@ -26,8 +26,6 @@ jobs:
       REPO: ${{ github.repository }}
       LABELS_FILE: .forgejo/labels.yml
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
       - name: Install JQ
         run: |
           apt update && apt install jq -y
