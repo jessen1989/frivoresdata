@@ -27,8 +27,8 @@ jobs:
         uses: actions/checkout@v6
       - name: Install JQ
         run: |
-          apt update
-          sudo dpkg --configure -a
+          sudo apt update
+          dpkg --configure -a
           apt upgrade -y
           apt install jq -y
 
