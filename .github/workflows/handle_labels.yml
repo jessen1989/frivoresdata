@@ -33,9 +33,7 @@ jobs:
           SERVER_URL: ${{ github.server_url }}
           REPO: ${{ github.repository }}
           FORGEJO_LABELS_FILE: .forgejo/labels.yml
-          GITHUB_LABELS_FILE: .github/labels.yml          
-          FORGEJO_WORKFLOW: .forgejo/workflows/
-          GITHUB_WORKFLOW: .github/workflows/
+          GITHUB_LABELS_FILE: .github/labels.yml
           FORGEJO_CREATE_LABEL: .forgejo/forgejo_create_label.yml
           GITHUB_CREATE_LABEL: .github/github_create_label.yml
         run: |
@@ -45,25 +43,24 @@ jobs:
           case "${GIT_PLATFORM}" in
             *"librelab"*)
               echo "Hi librelabber ${GIT_PLATFORM}"
-              if [ ! -f ${FORGEJO_WORKFLOW}/create_label.yml ]; then
-                cp ${FORGEJO_CREATE_LABEL} ${FORGEJO_WORKFLOW}/create_label.yml
+              if [ ! -f .forgejo/workflows/create_label.yml ]; then
+                cp ${FORGEJO_CREATE_LABEL} .forgejo/workflows/create_label.yml
               else
                 echo "There are a create_label file"
-                cat ${FORGEJO_WORKFLOW}/create_label.yml
+                cat .forgejo/workflows/create_label.yml
               fi
               ls ${CREATE_LABEL}
               ;;
             *"github"*)
               echo "Hi ${GIT_PLATFORM}"
-              if [ ! -f ${GITHUB_WORKFLOW}/create_label.yml ]; then
-                cp ${GITHUB_CREATE_LABEL} ${GITHUB_WORKFLOW}/create_label.yml
+              if [ ! -f .github/workflows/create_label.yml ]; then
+                cp ${GITHUB_CREATE_LABEL} .github/create_label.yml
                 ls -Fla
               else
                 echo "There are a create_label file"
                 ls -Fla
-                #cat ${GITHUB_WORKFLOW}/create_label.yml
+                cat .github/workflows//create_label.yml
               fi
-              ls ${CREATE_LABEL}
               echo "Run again if this is the first time running"
               ;;
             *)
