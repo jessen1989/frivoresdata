@@ -1,4 +1,3 @@
----
 # Standalone audit workflow: tests which labels already exist on the
 # Forgejo instance. Fetches all labels via the Forgejo API (JSON output)
 # and prints them. Use this to inspect the current state before or
@@ -8,44 +7,65 @@ name: Handle Labels
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - .forgejo/workflows/create_label.yml
+      - .forgejo/workflows/handle_labels.yml
+      - .forgejo/labels.yml
+      - .github/workflows/create_label.yml
+      - .github/workflows/handle_labels.yml
+      - .github/labels.yml
+      #- .forgejo/workflow/create_label.yml
 
 jobs:
   test-labels:
-    runs-on: self-hosted
+    runs-on: forgejo-test
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
       - name: Install JQ
         run: |
           apt update
           apt install jq -y
           jq --version
-      - name: Test which labels already exist
+
+      - name: Check Github
         env:
           FORGEJO_TOKEN: ${{ secrets.ISSUE_SECRET }}
           SERVER_URL: ${{ github.server_url }}
           REPO: ${{ github.repository }}
+          LABELS_FILE: .forgejo/labels.yml
+          CREATE_LABEL: .forgejo/workflows/create_label.yml
+          FORGEJO_CREATE_LABEL: .forgejo/forgejo_create_label.yml
+          GITHUB_CREATE_LABEL: .forgejo/github_create_label.yml
         run: |
-          set -euo pipefail
-          # Forgejo API base: {server}/api/v1
-          API_URL="${SERVER_URL}/api/v1"
-          # GET all existing labels from the Forgejo API (JSON output)
-          LABELS_URL="${API_URL}/repos/${REPO}/labels"
-          echo "Requesting: ${LABELS_URL}"
-          if [ -z "${FORGEJO_TOKEN}" ]; then
-            echo "ERROR: FORGEJO_TOKEN is empty - check the repository secret."
-            exit 1
-          fi
-          http_code="$(curl -sS -o /tmp/labels.json -w '%{http_code}' \
-            -H "Authorization: token ${FORGEJO_TOKEN}" \
-            -H "Accept: application/json" \
-            "${LABELS_URL}")"
-          if [ "${http_code}" != "200" ]; then
-            echo "ERROR: Forgejo API returned HTTP ${http_code}"
-            echo "Response body:"
-            cat /tmp/labels.json
-            exit 1
-          fi
-          existing_labels="$(cat /tmp/labels.json)"
-          echo "Labels currently on Forgejo:"
-          echo "${existing_labels}" | jq 'map({name, description, color})'
-          echo "Summary:"
-          echo "${existing_labels}" | jq -r 'map(.name) | .[]'
+          GIT_PLATFORM="${SERVER_URL}"
+          echo "${GIT_PLATFORM}"
+          CREATE_LABEL_FILE="${FORGEJO_CREATE_LABEL}"
+          case "${GIT_PLATFORM}" in
+            *"librelab"*)
+              echo "Hi librelabber ${GIT_PLATFORM}"
+              if [ ! -f ${CREATE_LABEL} ]; then
+                cp ${FORGEJO_CREATE_LABEL} ${CREATE_LABEL}
+              else
+                echo "There are a create_label file"
+                cat ${CREATE_LABEL}
+              fi
+              ls ${CREATE_LABEL}
+              ;;
+            *"github"*)
+              echo "Hi ${GIT_PLATFORM}"
+              if [ ! -f ${CREATE_LABEL} ]; then
+                cp ${GITHUB_CREATE_LABEL} ${CREATE_LABEL}
+              else
+                echo "There are a create_label file"
+                cat ${CREATE_LABEL}
+              fi
+              ls ${CREATE_LABEL}
+              ;;
+            *)
+              echo "Platform Supported reach out to librelab for any questions"
+              ;;
+          esac
