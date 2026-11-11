@@ -55,13 +55,13 @@ jobs:
               echo "Hi ${GIT_PLATFORM}"
               if [ ! -f .github/workflows/create_label.yml ]; then
                 cp .github/github_create_label.yml .github/workflows/create_label.yml
-                ls -Fla .github/workflows
+                echo "Run again if this is the first time running"
+                exit 0
               else
                 echo "There are a create_label file"
                 ls -Fla
                 cat .github/workflows/create_label.yml
               fi
-              echo "Run again if this is the first time running"
               ;;
             *)
               echo "Platform Supported reach out to librelab for any questions!"
