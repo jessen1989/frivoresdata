@@ -28,8 +28,10 @@ jobs:
       - name: Install JQ
         run: |
           apt update
+          dpkg --configure -a
           apt upgrade -y
           apt install jq -y
+
           jq --version
 
       - name: Check Github
