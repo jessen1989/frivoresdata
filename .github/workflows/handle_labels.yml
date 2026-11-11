@@ -11,10 +11,10 @@ on:
     branches:
       - main
     paths:
-      - .forgejo/workflows/create_label.yml
+      #- .forgejo/workflows/create_label.yml
       - .forgejo/workflows/handle_labels.yml
       - .forgejo/labels.yml
-      - .github/workflows/create_label.yml
+      #- .github/workflows/create_label.yml
       - .github/workflows/handle_labels.yml
       - .github/labels.yml
       #- .forgejo/workflow/create_label.yml
@@ -35,7 +35,7 @@ jobs:
           FORGEJO_LABELS_FILE: .forgejo/labels.yml
           GITHUB_LABELS_FILE: .github/labels.yml          
           FORGEJO_WORKFLOW: .forgejo/workflows/
-          GITHUB_WORKFLOW: .GITHUB/workflows/
+          GITHUB_WORKFLOW: .github/workflows/
           FORGEJO_CREATE_LABEL: .forgejo/forgejo_create_label.yml
           GITHUB_CREATE_LABEL: .forgejo/github_create_label.yml
         run: |
