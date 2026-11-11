@@ -21,7 +21,7 @@ labels:
     description: "Improvements or additions to documentation"
     color: "FF00FF"
   - name: "wontfix"
-    description: "This will not be worked on"
+    description: "This will not bee worked on"
     color: "fffffe"
   - name: "testlabel"
     color: "F5C027"
