@@ -36,8 +36,6 @@ jobs:
 
       - name: Install curl and jq
         run: |
-          apt update
-          apt upgrade -y
           apt install -y curl jq
           jq --version
 
