@@ -45,7 +45,7 @@ jobs:
           case "${GIT_PLATFORM}" in
             *"librelab"*)
               echo "Hi librelabber ${GIT_PLATFORM}"
-              if [ ! -f ${CREATE_LABEL} ]; then
+              if [ ! -f ${FORGEJO_WORKFLOW}/create_label.yml ]; then
                 cp ${FORGEJO_CREATE_LABEL} ${CREATE_LABEL}
               else
                 echo "There are a create_label file"
@@ -55,7 +55,7 @@ jobs:
               ;;
             *"github"*)
               echo "Hi ${GIT_PLATFORM}"
-              if [ ! -f ${CREATE_LABEL} ]; then
+              if [ ! -f ${GITHUB_WORKFLOW}/create_label.yml ]; then
                 cp ${GITHUB_CREATE_LABEL} ${CREATE_LABEL}
               else
                 echo "There are a create_label file"
