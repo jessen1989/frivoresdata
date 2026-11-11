@@ -21,7 +21,7 @@ on:
 
 jobs:
   test-labels:
-    runs-on: forgejo-test
+    runs-on: self-hosted
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
