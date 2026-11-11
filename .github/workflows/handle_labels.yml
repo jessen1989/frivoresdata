@@ -37,7 +37,7 @@ jobs:
           FORGEJO_WORKFLOW: .forgejo/workflows/
           GITHUB_WORKFLOW: .github/workflows/
           FORGEJO_CREATE_LABEL: .forgejo/forgejo_create_label.yml
-          GITHUB_CREATE_LABEL: .forgejo/github_create_label.yml
+          GITHUB_CREATE_LABEL: .github/github_create_label.yml
         run: |
           GIT_PLATFORM="${SERVER_URL}"
           echo "${GIT_PLATFORM}"
