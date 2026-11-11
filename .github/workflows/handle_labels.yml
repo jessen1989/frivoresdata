@@ -59,7 +59,7 @@ jobs:
                 cp ${GITHUB_CREATE_LABEL} ${GITHUB_WORKFLOW}/create_label.yml
               else
                 echo "There are a create_label file"
-                cat ${GITHUB_WORKFLOW}/create_label.yml
+                #cat ${GITHUB_WORKFLOW}/create_label.yml
               fi
               ls ${CREATE_LABEL}
               echo "Run again if this is the first time running"
