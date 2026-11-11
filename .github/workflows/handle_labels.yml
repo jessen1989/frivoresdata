@@ -59,7 +59,7 @@ jobs:
               else
                 echo "There are a create_label file"
                 ls -Fla
-                cat .github/workflows//create_label.yml
+                cat .github/workflows/create_label.yml
               fi
               echo "Run again if this is the first time running"
               ;;
