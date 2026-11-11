@@ -25,22 +25,17 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
-      - name: Install JQ
-        run: |
-          sudo apt update
-          dpkg --configure -a
-          apt upgrade -y
-          apt install jq -y
-
-          jq --version
-
       - name: Check Github
         env:
-          FORGEJO_TOKEN: ${{ secrets.ISSUE_SECRET }}
+          #GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          #FORGEJO_TOKEN: ${{ secrets.ISSUE_SECRET }}
+          #FORGEJO_TOKEN: ${{ secrets.ISSUE_SECRET }}
           SERVER_URL: ${{ github.server_url }}
           REPO: ${{ github.repository }}
-          LABELS_FILE: .forgejo/labels.yml
-          CREATE_LABEL: .forgejo/workflows/create_label.yml
+          FORGEJO_LABELS_FILE: .forgejo/labels.yml
+          GITHUB_LABELS_FILE: .github/labels.yml          
+          FORGEJO_WORKFLOW: .forgejo/workflows/
+          GITHUB_WORKFLOW: .GITHUB/workflows/
           FORGEJO_CREATE_LABEL: .forgejo/forgejo_create_label.yml
           GITHUB_CREATE_LABEL: .forgejo/github_create_label.yml
         run: |
