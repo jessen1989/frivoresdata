@@ -60,6 +60,7 @@ jobs:
                 ls -Fla
               else
                 echo "There are a create_label file"
+                ls -Fla
                 #cat ${GITHUB_WORKFLOW}/create_label.yml
               fi
               ls ${CREATE_LABEL}
