@@ -54,8 +54,7 @@ jobs:
             *"github"*)
               echo "Hi ${GIT_PLATFORM}"
               if [ ! -f .github/workflows/create_label.yml ]; then
-                cp .github/github_create_label.yml .github/workflows/create_label.yml
-                echo "Run again if this is the first time running"
+                echo "copy the github_create_label into workflows and rename it to create_label.yml"
                 exit 0
               else
                 echo "There are a create_label file"
