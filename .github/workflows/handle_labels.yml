@@ -46,20 +46,20 @@ jobs:
             *"librelab"*)
               echo "Hi librelabber ${GIT_PLATFORM}"
               if [ ! -f ${FORGEJO_WORKFLOW}/create_label.yml ]; then
-                cp ${FORGEJO_CREATE_LABEL} ${CREATE_LABEL}
+                cp ${FORGEJO_CREATE_LABEL} ${FORGEJO_WORKFLOW}/create_label.yml
               else
                 echo "There are a create_label file"
-                cat ${CREATE_LABEL}
+                cat ${FORGEJO_WORKFLOW}/create_label.yml
               fi
               ls ${CREATE_LABEL}
               ;;
             *"github"*)
               echo "Hi ${GIT_PLATFORM}"
               if [ ! -f ${GITHUB_WORKFLOW}/create_label.yml ]; then
-                cp ${GITHUB_CREATE_LABEL} ${CREATE_LABEL}
+                cp ${GITHUB_CREATE_LABEL} ${GITHUB_WORKFLOW}/create_label.yml
               else
                 echo "There are a create_label file"
-                cat ${CREATE_LABEL}
+                cat ${GITHUB_WORKFLOW}/create_label.yml
               fi
               ls ${CREATE_LABEL}
               echo "Run again if this is the first time running"
