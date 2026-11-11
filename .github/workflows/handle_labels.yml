@@ -14,7 +14,7 @@ on:
       #- .forgejo/workflows/create_label.yml
       - .forgejo/workflows/handle_labels.yml
       - .forgejo/labels.yml
-      #- .github/workflows/create_label.yml
+      - .github/workflows/create_label.yml
       - .github/workflows/handle_labels.yml
       - .github/labels.yml
       #- .forgejo/workflow/create_label.yml
