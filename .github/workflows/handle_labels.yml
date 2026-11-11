@@ -11,7 +11,7 @@ on:
     branches:
       - main
     paths:
-      #- .forgejo/workflows/create_label.yml
+      - .forgejo/workflows/create_label.yml
       - .forgejo/workflows/handle_labels.yml
       - .forgejo/labels.yml
       - .github/workflows/create_label.yml
@@ -27,15 +27,10 @@ jobs:
         uses: actions/checkout@v6
       - name: Check Github
         env:
-          #GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          #FORGEJO_TOKEN: ${{ secrets.ISSUE_SECRET }}
-          #FORGEJO_TOKEN: ${{ secrets.ISSUE_SECRET }}
           SERVER_URL: ${{ github.server_url }}
           REPO: ${{ github.repository }}
-          FORGEJO_LABELS_FILE: .forgejo/labels.yml
-          GITHUB_LABELS_FILE: .github/labels.yml
-          FORGEJO_CREATE_LABEL: .forgejo/forgejo_create_label.yml
-          GITHUB_CREATE_LABEL: .github/github_create_label.yml
+          #FORGEJO_LABELS_FILE: .forgejo/labels.yml
+          #GITHUB_LABELS_FILE: .github/labels.yml
         run: |
           GIT_PLATFORM="${SERVER_URL}"
           echo "${GIT_PLATFORM}"
@@ -44,7 +39,8 @@ jobs:
             *"librelab"*)
               echo "Hi librelabber ${GIT_PLATFORM}"
               if [ ! -f .forgejo/workflows/create_label.yml ]; then
-                cp ${FORGEJO_CREATE_LABEL} .forgejo/workflows/create_label.yml
+                echo "copy the forgejo_create_label.yaml into workflows and rename it to create_label.yml"
+                exit 0
               else
                 echo "There are a create_label file"
                 cat .forgejo/workflows/create_label.yml
@@ -52,14 +48,12 @@ jobs:
               ls ${CREATE_LABEL}
               ;;
             *"github"*)
-              echo "Hi ${GIT_PLATFORM}"
+              echo "Hi this a ${GIT_PLATFORM} platform"
               if [ ! -f .github/workflows/create_label.yml ]; then
-                echo "copy the github_create_label into workflows and rename it to create_label.yml"
+                echo "copy the github_create_label.yaml into workflows and rename it to create_label.yml"
                 exit 0
               else
                 echo "There are a create_label file"
-                ls -Fla
-                cat .github/workflows/create_label.yml
               fi
               ;;
             *)
