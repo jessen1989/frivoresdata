@@ -41,7 +41,7 @@ jobs:
         run: |
           GIT_PLATFORM="${SERVER_URL}"
           echo "${GIT_PLATFORM}"
-          CREATE_LABEL_FILE="${FORGEJO_CREATE_LABEL}"
+          #CREATE_LABEL_FILE="${FORGEJO_CREATE_LABEL}"
           case "${GIT_PLATFORM}" in
             *"librelab"*)
               echo "Hi librelabber ${GIT_PLATFORM}"
