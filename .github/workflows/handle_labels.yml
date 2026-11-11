@@ -55,7 +55,7 @@ jobs:
               echo "Hi ${GIT_PLATFORM}"
               if [ ! -f .github/workflows/create_label.yml ]; then
                 cp .github/github_create_label.yml .github/workflows/create_label.yml
-                ls -Fla
+                ls -Fla .github/workflows
               else
                 echo "There are a create_label file"
                 ls -Fla
