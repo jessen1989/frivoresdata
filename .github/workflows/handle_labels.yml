@@ -64,6 +64,7 @@ jobs:
                 cat ${CREATE_LABEL}
               fi
               ls ${CREATE_LABEL}
+              echo "Run again if this is the first time running"
               ;;
             *)
               echo "Platform Supported reach out to librelab for any questions"
