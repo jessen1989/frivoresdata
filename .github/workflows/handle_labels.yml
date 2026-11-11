@@ -67,6 +67,6 @@ jobs:
               echo "Run again if this is the first time running"
               ;;
             *)
-              echo "Platform Supported reach out to librelab for any questions"
+              echo "Platform Supported reach out to librelab for any questions!"
               ;;
           esac
