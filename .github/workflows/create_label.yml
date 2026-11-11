@@ -34,10 +34,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      - name: Install curl and jq
-        run: |
-          apt install -y curl jq
-          jq --version
+      #- name: Install curl and jq
+      #  run: |
+      #    apt install -y curl jq
+      #    jq --version
 
       - name: Install yq
         uses: mikefarah/yq@v4.54.3
